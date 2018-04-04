@@ -1,0 +1,24 @@
+*** Settings ***
+Library           ImapLibrary
+Resource          Base.txt
+Library           OperatingSystem
+Library           Collections
+
+*** Variables ***
+${emailHost}      mail.server.com
+${emailLogin}     autotest@yourcompany.com
+${emailPassword}    yourEmailPassword
+${emailPort}      993
+
+*** Keywords ***
+Wait For New Email With Subject
+    [Arguments]    ${expectedSubject}
+    Open Mailbox    host=${emailHost}    user=${emailLogin}    password=${emailPassword}    port=${emailPort}
+    ${letter}=    Wait For Email    recipient=${emailLogin}    subject=Confirm your registration    timeout=30    status=UNSEEN
+    [Return]    ${letter}
+
+Open link from email by number
+    [Arguments]    ${letter}    ${linkNum}
+    ${linkNumber}=    Convert To Integer    ${linkNum}
+    ${HTML}=    Open Link From Email    ${letter}    ${linkNumber}
+    [Return]    ${HTML}

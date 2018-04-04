@@ -1,0 +1,24 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          ../GlobalKeywords/StringExtensions.txt
+Resource          ../GlobalKeywords/Common.txt
+
+*** Keywords ***
+Delete last added item from Wishlist
+    Scroll to Element (under header)    //tr[contains(@class,'last')]//div[@class='desktop-view']/a[contains(@class,'btn-remove')]
+    Click element    //tr[contains(@class,'last')]//div[@class='desktop-view']/a[contains(@class,'btn-remove')]
+
+Delete ALL items from wishlist
+    ${productNumber}=    Get Matching Xpath Count    //table[@id='wishlist-table']//tr[contains(@id,'item')]
+    Comment    ${i}=    Set Variable    1
+    :FOR    ${i}    IN RANGE    0    ${productNumber}
+    \    Run Keyword If    ${i} <= ${productNumber}    Delete last added item from Wishlist
+    \    Comment    Run Keyword If    ${i} > ${productNumber}    Exit For Loop
+
+Check that Wishlist is empty
+    Page Should Not Contain Element    //table[@id='wishlist-table']//tr[contains(@id,'item')]
+
+Delete ALL items from wishlist if it is not empty
+    ${wishlistIsEmpty}=    Run Keyword And Return Status    Check that Wishlist is empty
+    Run Keyword If    ${wishlistIsEmpty}== True    Delete ALL items from wishlist
+    Check that Wishlist is empty

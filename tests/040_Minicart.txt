@@ -1,0 +1,42 @@
+*** Settings ***
+Suite Setup       Run keywords    SuiteSetup    Log in
+Suite Teardown    SuiteTeardown
+Test Setup        Empty Cart
+Test Teardown
+Default Tags      sanity
+Library           BuiltIn
+Resource          ../GlobalKeywords/Base.txt
+Resource          ../GlobalKeywords/StringExtensions.txt
+Resource          ../PagesKeywords/SearchResults.txt
+Resource          ../PagesKeywords/Header.txt
+Resource          ../PagesKeywords/PDP.txt
+Resource          ../PagesKeywords/Cart.txt
+Resource          ../PagesKeywords/Minicart.txt
+
+*** Variables ***
+${searchFor}      Tequila
+
+*** Test Cases ***
+Add to Cart from PDP
+    [Tags]    smoke
+    Search for products    ${searchFor}
+    Click search result item    2
+    Should be on PDP page
+    Add product to Cart
+    Minicart count should be    1
+    Open Minicart popup
+    Minicart Popup count should be    1
+
+Add more than one to Cart from PDP
+    [Tags]    smoke
+    Search for products    ${searchFor}
+    Click search result item    2
+    Should be on PDP page
+    Set product QTY    3
+    Add product to Cart
+    Minicart count should be    1
+    Set product QTY    2
+    Add product to Cart
+    Minicart count should be    1
+    Open Minicart popup
+    Minicart Popup count should be    5

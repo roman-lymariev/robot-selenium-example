@@ -1,0 +1,69 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          ../PagesKeywords/SearchResults.txt
+
+*** Variables ***
+${autocompleteXpath}    //div[@class="autocomplete-products-wrapper"]/ul/li[%s]
+
+*** Keywords ***
+Enter search text
+    [Arguments]    ${searchText}
+    ${isOpened}=    Element is Visible    //*[@id='search']
+    Run Keyword Unless    ${isOpened}    Click Element    //a[@href="#header-search"]
+    Run Keyword Unless    ${isOpened}    Sleep    2s
+    Input text    id=search    ${searchText}
+
+Start Search
+    Click Button    //button[@class="button search-button"]
+
+Click Log Out
+    Click Element    //*[@id='header-account']//a[@href[contains(.,'logout')]]
+
+Open Login popup
+    ${isOpened}=    Element is Visible    //div[@id="login-form-holder"]
+    Run Keyword Unless    ${isOpened}    Click Element    //a[@href="#login-form-holder"]
+
+Open Account popup
+    ${isOpened}=    Element is Visible    //*[@id="header-account"]
+    Run Keyword Unless    ${isOpened}    Click Element    //a[@data-target-element="#header-account"]
+
+Get suggested search item Text by row
+    [Arguments]    ${row}
+    Click Element    id=search
+    ${xpath}=    Format String    //div[contains(@class, 'suggested-item')][%s]/span[1]    ${row}
+    Wait Until Element Contains    ${xpath}    20
+    ${return}    Get Text    ${xpath}
+    [Return]    ${return}
+
+Autocomplete should contain text
+    [Arguments]    ${row}    ${expectedText}
+    ${xpath}=    Format String    ${autocompleteXpath}    ${row}
+    Wait Until Element Is Visible    ${xpath}//h2/a
+    Wait Until Element Contains    ${xpath}//h2/a    ${expectedText}    1
+
+Get breadcrumbs text
+    ${return}    Get Text    //div[@class="breadcrumbs"]
+    [Return]    ${return}
+
+Get breadcrumbs product text
+    ${return}    Get Text    //div[@class="breadcrumbs"]//li[@class="product"]
+    [Return]    ${return}
+
+Open Cart
+    Click Minicart
+    Click Go to Cart
+    Should be on Cart page
+
+Empty Cart
+    ${minicartCount}=    Get minicart count
+    Run Keyword If    '${minicartCount}' != '${0}'    Open Cart
+    Run Keyword If    '${minicartCount}' != '${0}'    Click Empty Cart
+
+Open My Account
+    Click Element    //*[@id='header']//p[@class='welcome-msg']
+
+Search for products
+    [Arguments]    ${searchText}
+    Enter search text    ${searchText}
+    Start search
+    Search results should appear

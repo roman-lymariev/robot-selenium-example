@@ -1,0 +1,40 @@
+*** Settings ***
+Library           Selenium2Library    #execute "pip install --upgrade robotframework-selenium2library" in cmd.exe to upgrade to Selenium 3
+Library           String
+Library           OperatingSystem
+Resource          Common.txt
+Resource          ../PagesKeywords/Login.txt
+Resource          ../PagesKeywords/Header.txt
+
+*** Variables ***
+${browser}        chrome
+${url}            https://your.test.product.com
+${adminUrl}       https://your.test.product.com/admin
+${login}          yourLogin
+${password}       yourPassword
+${adminLogin}     adminLogin
+${adminPassword}    adminPassword
+
+*** Keywords ***
+SuiteSetup
+    BrowserSetup
+
+TestSetup
+    [Arguments]    ${extension}
+    [Documentation]    Go to URI
+    ${target_uri} =    Catenate    SEPARATOR=    ${url}    ${extension}
+    Sleep    1s
+    Go To    ${target_uri}
+
+TestTeardown
+    Delete All Cookies
+
+SuiteTeardown
+    Close All Browsers
+
+BrowserSetup
+    ${timeout}=    Get Environment Variable    SELENIUM_TIMEOUT    15
+    Open browser    ${url}    ${browser}
+    Run Keyword If    '${browser}' != 'firefox'    Maximize Browser Window
+    Set Selenium Timeout    ${timeout}
+    Set Window Size    1920    1080

@@ -1,0 +1,39 @@
+*** Settings ***
+Suite Setup       BrowserSetup
+Suite Teardown    SuiteTeardown
+Default Tags      sanity
+Library           BuiltIn
+Resource          ../GlobalKeywords/Base.txt
+Resource          ../PagesKeywords/Login.txt
+Resource          ../PagesKeywords/Header.txt
+Resource          ../GlobalKeywords/StringExtensions.txt
+
+*** Test Cases ***
+Login with invalid credentials
+    [Setup]    Open Login popup
+    [Template]    Login with invalid credentials
+    invalid    ${PASSWORD}
+    ${LOGIN}    invalid
+    invalid    invalid
+    ${EMPTY}    ${PASSWORD}
+    ${LOGIN}    ${EMPTY}
+    ${EMPTY}    ${EMPTY}
+
+Login with valid credentials
+    [Tags]    smoke
+    Open Login popup
+    Input Login and Password    ${login}    ${password}
+    Submit credentials
+    Customer selection popup should be visible
+
+User can select company
+    Select customer by id    ${user_id}
+    Confirm customer selection
+
+Correct user is logged in
+    User with correct id is logged    ${user_id}
+
+Log out
+    Open Account popup
+    Click Log Out
+    No user is logged in

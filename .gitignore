@@ -1,0 +1,11 @@
+# Log file, drivers, etc
+
+*.log
+*.xml
+*.html
+
+# Directories
+.idea/
+libspec/
+profile/
+/GlobalKeywords/__init__.txt

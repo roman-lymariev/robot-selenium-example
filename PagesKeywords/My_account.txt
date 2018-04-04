@@ -1,0 +1,32 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Keywords ***
+Click Wishlists link
+    Click Element    //ul[@class='account-navigation']//a[contains(@href,'wishlist')]
+
+Click Orders link
+    Click Element    //a[contains(@href,'/sales/order/history/')]
+
+Click Address book link
+    Click Element    //a[contains(@href,'/customer/address/')]
+
+Click Account Information
+    Click Element    //a[contains(@href,'/customer/account/edit')]
+
+Should be on Dashboard page
+    Location Should Contain    /customer/account/
+
+Should be on Wishlists page
+    Location Should Contain    /wishlist/
+    Page Should Contain Element    id=wishlist-view-form
+
+Should be on Orders page
+    Location Should Contain    /sales/order/history/
+    Page Should Contain Element    id=my-orders-table
+
+Should be on Address book page
+    Location Should Contain    /customer/address/
+
+Should be on Account Information page
+    Location Should Contain    /customer/account/

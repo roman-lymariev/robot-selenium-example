@@ -1,0 +1,25 @@
+*** Settings ***
+Suite Setup       SuiteSetup
+Suite Teardown    SuiteTeardown
+Test Setup
+Default Tags      sanity
+Library           BuiltIn
+Resource          ../GlobalKeywords/Base.txt
+Resource          ../GlobalKeywords/StringExtensions.txt
+Resource          ../PagesKeywords/SearchResults.txt
+Resource          ../PagesKeywords/Header.txt
+
+*** Variables ***
+${searchFor}      Tequila
+
+*** Test Cases ***
+Suggest search with results
+    Enter search text    ${searchFor}
+    Autocomplete should contain text    1    ${searchFor}
+
+Suggest Search results are relevant
+    Enter search text    ${searchFor}
+    Autocomplete should contain text    1    ${searchFor}
+    Autocomplete should contain text    2    ${searchFor}
+    Autocomplete should contain text    3    ${searchFor}
+    Autocomplete should contain text    4    ${searchFor}

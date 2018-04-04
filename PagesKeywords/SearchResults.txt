@@ -1,0 +1,75 @@
+*** Settings ***
+Library           Selenium2Library
+Library           String
+Resource          ../GlobalKeywords/Base.txt
+Resource          ../GlobalKeywords/Common.txt
+
+*** Keywords ***
+Wait for search results
+    Location Should Contain    catalogsearch/result/?
+
+Search results should appear
+    Wait for search results
+    Element Should Be Visible    //div[@class="category-products js-product-items"]
+    Sleep    2s
+
+No search results should appear
+    Wait for search results
+    Element Should Not Be Visible    //div[@class="category-products js-product-items"]
+
+Open Sort By
+    Click Element    //div[@class="sort-by"]/span
+
+Sort search results by
+    [Arguments]    ${sorting}
+    Open Sort By
+    Select option    ${sorting}
+
+Set results per page
+    [Arguments]    ${resultsPerPage}
+    Click Element    //div[@class="limiter"]/span
+    Select option    ${resultsPerPage}
+
+Search result item should contain
+    [Arguments]    ${row}    ${expected Text}
+    ${actualText}=    Get item Name by row    ${row}
+    Should Contain    ${actualText}    ${expected Text}
+
+Set search results pagination
+    [Arguments]    ${resultsPerPage}
+    Click Element    //div[@class="limiter"]/span
+    Select option    ${resultsPerPage}
+
+Should be displayed results per page
+    [Arguments]    ${expectedResultsCount}
+    [Documentation]    Asserts that exactly that number of search results are displayed.
+    ...    requires: product container xpath
+    Xpath Should Match X Times    //h2[@class="product-name"]    ${expectedResultsCount}
+
+Get item Name by row
+    [Arguments]    ${row}
+    ${xpath}=    Format String    //li[%s]//h2[@class="product-name"]/a    ${row}
+    ${return}    Get Element Attribute    ${xpath}@title
+    [Return]    ${return}
+
+Get item SKU by row
+    [Arguments]    ${row}
+    ${xpath}=    Format String    //div[@class="category-products"]//li[contains(@class,'item')][%s]//div[@class="product-sku"]    ${row}
+    ${return}    Get Text    ${xpath}
+    [Return]    ${return}
+
+Set item QTY by row
+    [Arguments]    ${row}    ${qty}
+    ${xpath}=    Format String    //li[contains(@class,'item')][%s]//input[@class="product-qty"]    ${row}
+    Input Text    ${xpath}    ${qty}
+
+Add item to cart by row
+    [Arguments]    ${row}    # product row
+    ${xpath}=    Format String    //li[contains(@class,'item')][%s]//button[@class="button btn-cart btn-ajax-add-to-cart"]    ${row}
+    Click Button    ${xpath}
+    Sleep    2s
+
+Click search result item
+    [Arguments]    ${row}
+    ${xpath}=    Format String    //li[%s]//h2[@class="product-name"]/a    ${row}
+    Click Element    ${xpath}

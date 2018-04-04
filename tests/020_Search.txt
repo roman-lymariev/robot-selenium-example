@@ -1,0 +1,65 @@
+*** Settings ***
+Suite Setup       SuiteSetup
+Suite Teardown    SuiteTeardown
+Test Setup
+Default Tags      sanity
+Library           BuiltIn
+Resource          ../GlobalKeywords/Base.txt
+Resource          ../GlobalKeywords/StringExtensions.txt
+Resource          ../PagesKeywords/SearchResults.txt
+Resource          ../PagesKeywords/Header.txt
+Resource          ../PagesKeywords/PDP.txt
+
+*** Variables ***
+${searchFor}      Tequila
+
+*** Test Cases ***
+Change Results Per Page setting
+    [Setup]    Open Category by name    ${searchFor}
+    [Template]    Show results per page
+    300
+    200
+    100
+    50
+
+Search without results
+    Enter search text    lizard
+    Start search
+    No search results should appear
+
+Search with results
+    [Tags]    smoke
+    Enter search text    ${searchFor}
+    Start search
+    Search results should appear
+
+Search results are relevant
+    [Tags]    smoke
+    Search for products    ${searchFor}
+    Sort search results by Relevance Descending
+    Search result item should contain    1    ${searchFor}
+    Search result item should contain    2    ${searchFor}
+    Search result item should contain    3    ${searchFor}
+    Search result item should contain    4    ${searchFor}
+    Search result item should contain    5    ${searchFor}
+
+Open Product from search results
+    [Tags]    smoke
+    Search for products    ${searchFor}
+    ${name}=    Get item Name by row    2
+    Click search result item    2
+    Should be on PDP page
+
+Correct Product is opened from search results
+    [Tags]    smoke
+    Search for products    ${searchFor}
+    ${name}=    Get item Name by row    2
+    Click search result item    2
+    Should be on PDP page
+    PDP.Product name should be    ${name}
+
+*** Keywords ***
+Show results per page
+    [Arguments]    ${resultsPerPage}    # how many results per page
+    Set search results pagination    ${resultsPerPage}
+    Should be displayed results per page    ${resultsPerPage}

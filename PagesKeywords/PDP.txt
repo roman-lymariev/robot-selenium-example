@@ -1,0 +1,40 @@
+*** Settings ***
+Library           Selenium2Library
+Resource          ../GlobalKeywords/StringExtensions.txt
+Resource          ../GlobalKeywords/Common.txt
+
+*** Keywords ***
+Get product Name
+    ${return}    Get Text    //*[@class='product-shop']//*[@class='product-name']//h1
+    [Return]    ${return}
+
+Product name should be
+    [Arguments]    ${expected}
+    ${actual}=    PDP.Get product Name
+    Should Be Equal    ${expected}    ${actual}
+
+Should be on PDP page
+    Wait Until Page Contains Element    //*[@id='product_addtocart_form']//div[@class='product-name']
+
+Set product QTY
+    [Arguments]    ${qty}
+    Clear Element Text    //*[@class='qty-wrapper']//input[@id="qty"]
+    Input Text    //*[@class='qty-wrapper']//input[@id="qty"]    ${qty}
+
+Add product to Cart
+    Click Element    //div[@class='add-to-cart-buttons']/button
+
+Add to Cart button should be disabled
+    Page Should Contain Element    //button[contains(@class,'btn-cart') and @disabled='disabled']
+
+Out of stock red indicator should be present
+    Page Should Contain Element    //div[contains(@class,'stock-indicator')]//span[contains(@class,'red')]
+
+Click wishlist link
+    Click element    //a[@class='link-wishlist']
+
+Product option should not be Out of Stock
+    [Arguments]    ${xpath}
+    ${xpathWithArg}    Catenate    SEPARATOR=    ${xpath}    @class
+    ${class}    Get Element Attribute    ${xpathWithArg}
+    Should Not Contain    ${class}    out-of-stock

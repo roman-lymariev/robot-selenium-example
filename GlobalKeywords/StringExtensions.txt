@@ -1,0 +1,40 @@
+*** Settings ***
+Library           DateTime
+Library           String
+
+*** Keywords ***
+Generate month string
+    ${currentMonth}=    Get Current Date    result_format=%m
+    ${result}=    Convert To String    ${currentMonth}
+    [Return]    ${result}
+
+Generate future year in YY format
+    ${currentYear}=    Get Current Date    result_format=%y
+    ${randomNumber}=    Evaluate    random.randint(1, 3)    modules=random
+    ${expYear}=    Evaluate    ${currentYear}+${randomNumber}
+    ${result}=    Convert To String    ${expYear}
+    [Return]    ${result}
+
+Generate future year in YYYY format
+    ${currentYear}=    Get Current Date    result_format=%Y
+    ${randomNumber}=    Evaluate    random.randint(1, 3)    modules=random
+    ${expYear}=    Evaluate    ${currentYear}+${randomNumber}
+    ${result}=    Convert To String    ${expYear}
+    [Return]    ${result}
+
+Generate card CVV
+    ${CVV}=    Generate Random String    3    [NUMBERS]
+    [Return]    ${CVV}
+
+Format String
+    [Arguments]    ${arg1}    ${arg2}    # source string, replace text
+    [Documentation]    Replaces %s in first string with the second string text.
+    ${result}=    Replace String    ${arg1}    %s    ${arg2}
+    [Return]    ${result}
+
+Get image index from src url
+    [Arguments]    ${src}
+    [Documentation]    Gets first 6-digit substring from input string by RegEx
+    ${matches}=    Get Regexp Matches    ${src}    \\d{6}
+    Append To List    ${matches}    0
+    [Return]    ${matches[0]}

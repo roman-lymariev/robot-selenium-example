@@ -1,0 +1,62 @@
+*** Settings ***
+Library           Selenium2Library
+Library           OperatingSystem
+Resource          Header.txt
+
+*** Keywords ***
+Log in as
+    [Arguments]    ${user_email}=    ${user_password}=
+    Open Login popup
+    Input Login and Password    ${user_email}    ${user_password}
+    Submit credentials
+    Customer selection popup should be visible
+    Select customer by id    ${user_id}
+    Confirm customer selection
+
+Login with invalid credentials
+    [Arguments]    ${login}    ${password}    # login, password
+    Input Login and Password    ${login}    ${password}
+    Submit credentials
+    Customer selection popup should NOT be visible
+
+Log in
+    Log in as    ${login}    ${password}
+
+Login error should be displayed
+    Element Should Be Visible    //p[@class="error"]
+
+Should be on My Account page
+    Location Should Contain    /customer/account/
+
+Should be on Login page
+    Wait Until Page Contains Element    //*[@id='login_link']    5
+    Click element    //*[@id='login_link']
+    Location Should Contain    /customer/account/login/
+
+No user is logged in
+    Element Should Not Be Visible    //span[@id="softlogin"]
+
+Input Login and Password
+    [Arguments]    ${username}    ${password}
+    Input Text    name=login[username]    ${username}
+    Input Text    name=login[password]    ${password}
+    Sleep    2s
+
+Submit credentials
+    Click Element    //button[@type="submit"]
+
+Close Select account popup
+    Wait Until Element Is Visible    xpath=//div[@class="fancybox-skin"]/a
+    Click Element    xpath=//div[@class="fancybox-skin"]/a
+    Wait Until Page Does Not Contain Element    xpath=//div[@class="fancybox-overlay fancybox-overlay-fixed"]
+
+Open Registration page
+    Click Element    xpath=//a[contains(@href,'customer/account/create')]
+
+Success popup should be visible
+    Element Should Be Visible    xpath=//div[@class="success message-inner"]
+
+User with correct id is logged
+    [Arguments]    ${id}
+    ${xpath}=    Format String    //span[@id="softlogin" and contains(text(), "%s")]    ${id}
+    Element is Visible    ${xpath}

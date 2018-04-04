@@ -1,0 +1,42 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Keywords ***
+Scroll To
+    [Arguments]    ${arg1}
+    Execute JavaScript    window.scrollTo(0,${arg1})
+
+Scroll top
+    Execute JavaScript    window.scrollTo(0, 0)
+
+Scroll bottom
+    Execute JavaScript    window.scrollTo(0,document.body.scrollHeight)
+
+Scroll To Element
+    [Arguments]    ${arg1}
+    Execute JavaScript    ${arg1}.scrollIntoView()
+
+Element is Visible
+    [Arguments]    ${elementXpath}
+    ${isVisible}=    Run Keyword And Return Status    Element Should Be Visible    ${elementXpath}
+    [Return]    ${isVisible}
+
+Success message should be displayed
+    Wait Until Element Is Visible    //li[@class='success-msg']    30
+
+Message text should contain
+    [Arguments]    ${expectedMessage}
+    ${actualMessage}=    Get Text    //li[@class='success-msg']
+    Should Contain    ${actualMessage}    ${expectedMessage}
+
+Cookie message should be displayed
+    Element Should Be Visible    id=notice-cookie-block
+
+Accept cookies
+    Click Element    //a[@class='cookie-accepted']
+
+Scroll to Element (under header)
+    [Arguments]    ${elemXpath}
+    ${elementVerticalPosition}    Get Vertical Position    ${elemXpath}
+    ${elementVertPositionUnderHeader}    Evaluate    ${elementVerticalPosition}-200
+    Scroll to    ${elementVertPositionUnderHeader}

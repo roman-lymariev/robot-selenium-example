@@ -1,0 +1,33 @@
+*** Settings ***
+Suite Setup       SuiteSetup
+Suite Teardown    SuiteTeardown
+Default Tags      sanity
+Resource          ../PagesKeywords/My_account.txt
+Resource          ../PagesKeywords/Header.txt
+Resource          ../GlobalKeywords/Base.txt
+Resource          ../GlobalKeywords/StringExtensions.txt
+
+*** Test Cases ***
+Open Account Dashboard page
+    Log in
+    Open My Account
+    Should be on Dashboard page
+
+Open Account Information
+    [Setup]
+    Click Account Information
+    Should be on Account Information page
+
+Open Address book page
+    Click Address book link
+    Should be on Address book page
+
+Open My Orders page
+    [Tags]    smoke
+    Click Orders link
+    Should be on Orders page
+
+Open Wishlists page
+    [Tags]    smoke
+    Click Wishlists link
+    Should be on Wishlists page

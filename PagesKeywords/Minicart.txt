@@ -1,0 +1,42 @@
+*** Settings ***
+Library           Selenium2Library
+
+*** Keywords ***
+Click Minicart
+    Click Element    //div[@class="header-minicart"]
+
+Get minicart count
+    ${return}    Get Text    //span[@class="count"]
+    [Return]    ${return}
+
+Get minicart total count
+    ${return}    Get Text    //span[@class="total-count"]
+    [Return]    ${return}
+
+Get minicart total weight
+    ${return}    Get Text    //span[@class="cart-weight"]
+    [Return]    ${return}
+
+Minicart count should be
+    [Arguments]    ${expected}
+    Textfield Should Contain    //span[@class="count"]    ${expected}
+    Get Text    //span[@class="count"]/[1]
+
+Minicart total count should be
+    [Arguments]    ${arg1}
+    ${return}    Get Text    //span[@class="total-count"]
+
+Minicart total weight should be
+    [Arguments]    ${arg1}
+    ${return}    Get Text    //span[@class="cart-weight"]
+
+Click Go to Cart
+    Click element    //a[@class='cart-link']
+
+Open Minicart popup
+    Click Element    //a[class="skip-link skip-cart"]
+
+Minicart Popup count should be
+    [Arguments]    ${expected}
+    ${actual}=    Get Element Attribute    //input[@class="qty cart-item-quantity input-text"]@value
+    Should Be Equal    ${expected}    ${actual}
