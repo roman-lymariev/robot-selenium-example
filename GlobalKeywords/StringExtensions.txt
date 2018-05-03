@@ -44,3 +44,15 @@ Go to uri
     ${target_url} =    Catenate    SEPARATOR=    ${url}    ${uriExtension}
     Sleep    1s
     Go To    ${target_url}
+    
+Get price whole part
+    [Arguments]    ${priceAsString}
+    ${matches}=    Get Regexp Matches    ${string}    \\d+
+    ${match}=    Collections.Get From List    ${matches}    0
+    [Return]    ${match}
+
+Get price decimal part
+    [Arguments]    ${priceAsString}
+    ${matches}=    Get Regexp Matches    ${string}    \\d+
+    ${match}=    Collections.Get From List    ${matches}    1
+    [Return]    ${match}
