@@ -40,3 +40,10 @@ Scroll to Element (under header)
     ${elementVerticalPosition}    Get Vertical Position    ${elemXpath}
     ${elementVertPositionUnderHeader}    Evaluate    ${elementVerticalPosition}-200
     Scroll to    ${elementVertPositionUnderHeader}
+    
+Verify number is in range
+    [Arguments]    ${number}    ${minRange}    ${maxRange}
+    Log    Verify that price is in range between ${minRange} and ${maxRange}.
+    Should Be True    ${minRange}<${number}
+    Should Be True    ${number}<${maxRange}
+
