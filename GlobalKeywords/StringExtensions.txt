@@ -38,3 +38,9 @@ Get image index from src url
     ${matches}=    Get Regexp Matches    ${src}    \\d{6}
     Append To List    ${matches}    0
     [Return]    ${matches[0]}
+
+Go to uri
+    [Arguments]    ${uriExtension}
+    ${target_url} =    Catenate    SEPARATOR=    ${url}    ${uriExtension}
+    Sleep    1s
+    Go To    ${target_url}
