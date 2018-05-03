@@ -10,6 +10,7 @@ Resource          ../PagesKeywords/Header.txt
 ${browser}        chrome
 ${url}            https://your.test.product.com
 ${adminUrl}       https://your.test.product.com/admin
+${urlAuthTemplate}        https://testuser:testpassword@
 ${login}          yourLogin
 ${password}       yourPassword
 ${adminLogin}     adminLogin
@@ -38,3 +39,15 @@ BrowserSetup
     Run Keyword If    '${browser}' != 'firefox'    Maximize Browser Window
     Set Selenium Timeout    ${timeout}
     Set Window Size    1920    1080
+
+Add auth to url
+    [Arguments]    ${urlToAugment}
+    [Documentation]    Adds auth part to URL, i.e. https://testuser:testpassword@your.test.product.com.
+    ${urlToAugment}=    Replace String    ${urlToAugment}    https://    ${urlAuth}
+    [Return]    ${urlToAugment}
+
+Go to prod uri
+    [Arguments]    ${uriExtension}
+    ${target_url} =    Catenate    SEPARATOR=    ${url_prod}    ${uriExtension}
+    Sleep    1s
+    Go To    ${target_url}
