@@ -10,6 +10,7 @@ You will also need to setup the following libraries:
 pip install python-string-utils 0.3.0
 pip install robotframework-selenium2library
 pip install robotframework-imaplibrary
+pip install -U robotframework-requests (if you plan to test with REST)
 
 Execute to upgrade to Selenium 3:
 pip install --upgrade robotframework-selenium2library
